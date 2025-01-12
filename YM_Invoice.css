@@ -1,0 +1,480 @@
+/* YM_Invoice.css */
+
+/* Basic reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    /* Slight grey to see the invoice boundaries */
+}
+
+/* #invoice container */
+#invoice {
+    background-color: white;
+    border: 2px solid #1F4E79;
+    /* We'll rely on @page for margins. Just leave some internal padding here. */
+    padding: 1cm;
+    width: 100%;
+    max-width: 20cm;
+    /* A4 width is 21cm */
+    margin: 20px auto;
+    /* Center on screen */
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Common spacing for sections */
+.section {
+    margin-bottom: 20px;
+}
+
+/* Header (light blue background with dark blue accent) */
+.header {
+    background-color: #DEEAF6;
+    border-left: 6px solid #1F4E79;
+    color: #1F4E79;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Added alignment */
+    border-radius: 4px;
+}
+
+/* Header left */
+.header-left h1 {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.header-left p {
+    margin-top: 5px;
+    font-size: 16px;
+}
+
+/* Header right (logo) */
+.header-right img {
+    width: 150px;
+    height: auto;
+    opacity: 0.9;
+}
+
+/* Billing info section */
+.billing {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.billing-left,
+.billing-right {
+    width: 48%;
+}
+
+.billing-left h2,
+.billing-right h2 {
+    font-size: 20px;
+    color: #1F4E79;
+    margin-bottom: 10px;
+}
+
+.billing-left p,
+.billing-right p {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+/* New Styles for Billing Fields */
+.billing-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.billing-field label {
+    width: 150px;
+    /* Fixed width for labels */
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+}
+
+.billing-field input[type="text"],
+.billing-field input[type="date"] {
+    flex: 1;
+    padding: 5px 8px;
+    border: none;
+    /* Remove borders */
+    border-bottom: 1px solid #ccc;
+    /* Optional: subtle underline */
+    background-color: transparent;
+    /* Remove background */
+    font-size: 16px;
+    color: #333;
+}
+
+.billing-field input::placeholder {
+    color: #999;
+    /* Placeholder text color */
+}
+
+/* Remove the bottom border on focus and add a highlight */
+.billing-field input[type="text"]:focus,
+.billing-field input[type="date"]:focus {
+    outline: none;
+    border-bottom: 2px solid #1F4E79;
+}
+
+/* Optional: Add a smooth transition for focus effect */
+.billing-field input[type="text"],
+.billing-field input[type="date"] {
+    transition: border-bottom 0.3s ease;
+}
+
+@media (max-width: 600px) {
+    .header-left h1 {
+        font-size: 28px;
+    }
+
+    .billing-field label,
+    .billing-field input[type="text"],
+    .billing-field input[type="date"] {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .billing-field {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .billing-right {
+        width: 100%;
+        margin-top: 20px;
+    }
+}
+
+/* Products table section */
+.products table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+/* Table Heading*/
+.products thead {
+    background-color: #DEEAF6;
+    /* Corrected to #DEEAF6 */
+}
+
+.products th,
+.products td {
+    border-bottom: 1px solid #1F4E79;
+    padding: 10px;
+    text-align: left;
+    font-size: 16px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.products th {
+    color: #1F4E79;
+    font-weight: bold;
+}
+
+/* Make DESKRIPSI a textarea with wrapping and smaller font */
+.products td textarea.deskripsi-field {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    background-color: transparent;
+    padding: 5px;
+    resize: none;
+    /* remove the bottom-right resize handle if desired */
+
+    /* Enable text wrapping at words */
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    /* ensures multi-line wrapping within the textarea */
+
+    /* Smaller font size */
+    font-size: 14px;
+    font-family: 'Segoe UI', sans-serif;
+    /* e.g., smaller than default 16px */
+    color: #333;
+    box-sizing: border-box;
+    /* ensures padding is included in total width */
+}
+
+/* Focus state if you want a highlight */
+.products td textarea.deskripsi-field:focus {
+    outline: none;
+    border-bottom: 2px solid #1F4E79;
+}
+
+.products td input {
+    max-width: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    background-color: transparent;
+    font-size: 16px;
+    color: #333;
+    padding: 5px;
+}
+
+.products td input::placeholder {
+    color: #999;
+}
+
+.products td input:focus {
+    outline: none;
+    border-bottom: 2px solid #1F4E79;
+}
+
+.products td input.qty {
+    max-width: 60px;
+}
+
+.products td input.harga {
+    max-width: 120px;
+}
+
+/* TOTAL cell no-wrap*/
+.products td.total {
+    white-space: nowrap;
+    font-size: 16px;
+    /* optionally smaller/larger */
+}
+
+/* Add Row Button */
+#add-row {
+    padding: 10px 20px;
+    background-color: #1F4E79;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+#add-row:hover {
+    background-color: #16325C;
+}
+
+/* Summary section */
+.summary {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.summary-left {
+    width: 48%;
+}
+
+.summary-left table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.summary-left td {
+    padding: 10px;
+    font-size: 16px;
+}
+
+.summary-left td:first-child {
+    text-align: left;
+    font-weight: bold;
+}
+
+.summary-left td:last-child {
+    text-align: right;
+}
+
+.summary-left input {
+    width: 110px;
+    padding: 6px 8px;
+    border: none;
+    text-align: left;
+    font-size: 16px;
+}
+
+/* Align input and span in summary-field */
+.summary-left .summary-field {
+    display: flex;
+    align-items: center;
+}
+
+/* Style for summary-input to make it plain */
+.summary-left .summary-input {
+    /* Override fixed width */
+    width: 100%;
+    max-width: none;
+    /* Remove any max-width constraints */
+    padding: 0;
+    /* Remove padding to align with existing styles */
+    border: none;
+    background-color: transparent;
+    text-align: left;
+    font-size: 16px;
+    margin-left: 5px;
+    /* Allow the input to expand naturally within the flex container */
+    flex: 1;
+}
+
+/* Add underline on focus for better UX */
+.summary-left .summary-input:focus {
+    border-bottom: 1px solid #1F4E79;
+}
+
+/* Spin Button Removal for Number Inputs */
+.summary-left .summary-input::-webkit-inner-spin-button,
+.summary-left .summary-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.summary-right {
+    width: 48%;
+    /* intentionally blank */
+}
+
+/* Terms & Conditions */
+.terms h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #1F4E79;
+}
+
+.terms p {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Address section */
+
+.address {
+    border-top: 2px solid #1F4E79;
+    padding-top: 10px;
+}
+
+.address p {
+    font-size: 12px;
+    margin-bottom: 5px;
+    text-align: right;
+}
+
+.address p strong {
+    color: #1F4E79;
+    font-size: 14px;
+}
+
+/* Generate Invoice button */
+.generate {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#generate-pdf {
+    padding: 12px 25px;
+    background-color: #1F4E79;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+#generate-pdf:hover {
+    background-color: #16325C;
+}
+
+/* Hide the button and add-row when actually printing */
+@media print {
+
+    /* Hide the PRINT and ADD ROW buttons */
+    #generate-pdf {
+        display: none;
+    }
+
+    #add-row {
+        display: none;
+    }
+
+    /* Hide scrollbar and ensure no overflow for DESKRIPSI textarea */
+    .products td textarea.deskripsi-field {
+        overflow: hidden;
+        /* Hide scrollbars */
+
+        /* Optional: Remove borders and padding for cleaner print */
+        border: none;
+        padding: 0;
+    }
+
+    /* Hide PRODUK input placeholders */
+    .products td input.produk::placeholder {
+        color: transparent;
+        border: none;
+        padding: 0;
+    }
+
+    /* Vendor prefixes for broader browser support */
+    .products td input.produk::-webkit-input-placeholder {
+        /* Chrome, Safari, Opera */
+        color: transparent;
+    }
+
+    .products td input.produk::-moz-placeholder {
+        /* Firefox 19+ */
+        color: transparent;
+    }
+
+    .products td input.produk:-ms-input-placeholder {
+        /* IE 10+ */
+        color: transparent;
+    }
+
+    .products td input.produk::-ms-input-placeholder {
+        /* Microsoft Edge */
+        color: transparent;
+    }
+
+    .products td input {
+        border-bottom: none;
+    }
+
+    .products td textarea.deskripsi-field {
+        border: none;
+    }
+
+    /* Hide borders for summary-input during print */
+    .summary-left .summary-input {
+        border: none;
+        /* Remove any box-shadow or outline if present */
+        box-shadow: none;
+    }
+
+    /* Additional alignment adjustments if necessary */
+    .summary-left .summary-field {
+        /* Adjust spacing if needed */
+        margin-bottom: 0;
+    }
+
+    .summary-left table tr {
+        page-break-inside: avoid;
+    }
+
+    .summary-left input {
+        border: none;
+    }
+}

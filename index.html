@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>YM Invoice</title>
+
+    <!-- Mobile meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json" />
+
+    <!-- Theme color (address bar in mobile, etc.) -->
+    <meta name="theme-color" content="#003366" />
+
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="YM_Invoice.css" />
+
+    <!-- Ensure the page prints at A4 size with margins -->
+    <style>
+        @page {
+            size: A4;
+            margin: 2.5cm 1cm;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="invoice">
+        <!-- Section 1: Header (20% height of page) -->
+        <div class="section header">
+            <div class="header-left">
+                <h1>INVOICE</h1>
+                <!-- Example: Full date format and invoice number -->
+                <p id="invoice-date">01 January 1970</p>
+                <p id="invoice-number">YM-INV#00001</p>
+            </div>
+            <div class="header-right">
+                <img src="./icons/icon-512.png" alt="Company Logo" id="logo" />
+            </div>
+        </div>
+
+        <!-- Section 2: Billing Info -->
+        <div class="section billing">
+            <!-- Left Part -->
+            <div class="billing-left">
+                <h2>TAGIHAN DITUJUKAN KEPADA:</h2>
+
+                <!-- Billing Fields -->
+                <div class="billing-field">
+                    <label for="customer-name">Atas Nama:</label>
+                    <input type="text" id="customer-name" value="John Doe" placeholder="Nama Klien" />
+                </div>
+
+                <div class="billing-field">
+                    <label for="event-date">Tanggal Acara:</label>
+                    <input type="date" id="event-date" value="2025-08-15" />
+                </div>
+
+                <div class="billing-field">
+                    <label for="event-location">Tempat Acara:</label>
+                    <input type="text" id="event-location" value="Jakarta Convention Center"
+                        placeholder="Lokasi Acara" />
+                </div>
+            </div>
+
+            <!-- Right Part -->
+            <div class="billing-right">
+                <h2>PEMBAYARAN DITUJUKAN KE:</h2>
+                <p><strong>A.N. YUSUF MEIYANTO</strong></p>
+                <p><strong>BCA 033 1939 241</strong></p>
+                <p>
+                    <strong>Jatuh Tempo Pembayaran:</strong>
+                    <span id="due-date">--</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Section 3: Products Table -->
+        <div class="section products">
+            <table id="products-table">
+                <colgroup>
+                    <col style="width: 23%;" /> <!-- PRODUK -->
+                    <col style="width: 25%;" /> <!-- DESKRIPSI -->
+                    <col style="width: 10%;" /> <!-- QTY -->
+                    <col style="width: 19%;" /> <!-- HARGA -->
+                    <col style="width: 23%;" /> <!-- TOTAL -->
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>PRODUK</th>
+                        <th>DESKRIPSI</th>
+                        <th>QTY</th>
+                        <th>HARGA</th>
+                        <th>TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody id="products-body">
+                    <!-- One sample row -->
+                    <tr>
+                        <td><input type="text" class="produk" placeholder="Produk" /></td>
+                        <td><textarea class="deskripsi-field" placeholder="Deskripsi"></textarea></td>
+                        <td><input type="number" class="qty" value="1" min="1" /></td>
+                        <td><input type="text" class="harga" value="100000" /></td>
+                        <td class="total">Rp. 100,000</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- Button to add row -->
+            <pre> </pre>
+            <button id="add-row">+ Tambah Produk</button>
+        </div>
+
+        <!-- Section 4: Summary -->
+        <div class="section summary">
+            <!-- Left part = summary table -->
+            <div class="summary-left">
+                <table>
+                    <tr>
+                        <td>Sub-total:</td>
+                        <td>
+                            <div class="summary-field">
+                                <span id="sub-total">0</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Diskon:</td>
+                        <td>
+                            <div class="summary-field">
+                                <span>Rp.</span>
+                                <input type="text" id="discount" value="0" min="0" class="summary-field harga"
+                                    aria-label="Diskon" />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Total:</td>
+                        <td>
+                            <div class="summary-field">
+                                <span id="total">0</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Down Payment:</td>
+                        <td>
+                            <div class="summary-field">
+                                <span>Rp.</span>
+                                <input type="text" id="down-payment" value="0" min="0" class="summary-field harga"
+                                    aria-label="Down Payment" />
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>TOTAL KEKURANGAN:</td>
+                        <td>
+                            <div class="summary-field">
+                                <span id="total-remaining">0</span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <!-- Right part is intentionally blank -->
+            <div class="summary-right"></div>
+        </div>
+
+        <!-- Section 5: Terms & Conditions -->
+        <div class="section terms">
+            <h3><u><strong>SYARAT DAN KETENTUAN</strong></u></h3>
+            <p>
+                Harap segera melakukan pembayaran sebelum
+                <span id="payment-deadline">--</span>.
+            </p>
+        </div>
+
+        <!-- Section 6: Address -->
+        <div class="section address">
+            <p><strong>SORIEZ HAPPY SALON</strong></p>
+            <p>Ruko Mojoroto Kav. 17 | Jl. Kawi, Kota Kediri.</p>
+            <p>Phone: 0811 3586 977</p>
+        </div>
+
+        <!-- Section 7: Generate Invoice Button -->
+        <div class="section generate">
+            <button id="generate-pdf">PRINT</button>
+        </div>
+    </div>
+
+    <!-- Link to external JS -->
+    <script src="YM_Invoice.js"></script>
+    <!-- Register the service worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(() => console.log('Service Worker Registered!'))
+                .catch(err => console.log('Service Worker registration failed!', err));
+        }
+    </script>
+</body>
+
+</html>
