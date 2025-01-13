@@ -248,12 +248,21 @@ body {
 }
 
 .products td .price-field {
-    display: inline-flex;
-    margin: center;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
 }
 
 .products td .price-field span {
     margin-right: 5px;
+}
+
+.products td .price-field input.harga {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    flex: 1;
 }
 
 /* TOTAL cell no-wrap*/
@@ -464,6 +473,10 @@ body {
 
     .products td textarea.deskripsi-field {
         border: none;
+    }
+
+    .products td .price-field {
+        border-bottom: none;
     }
 
     /* Hide borders for summary-input during print */
