@@ -247,6 +247,15 @@ body {
     max-width: 120px;
 }
 
+.products td .price-field {
+    display: inline-flex;
+    margin: center;
+}
+
+.products td .price-field span {
+    margin-right: 5px;
+}
+
 /* TOTAL cell no-wrap*/
 .products td.total {
     white-space: nowrap;
