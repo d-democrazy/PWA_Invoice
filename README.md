@@ -1,4 +1,6 @@
-I have a sheet of invoice. Code the invoice in HTML, CSS, and JavaScript. Separate files of `YM_Invoice.html`, `YM_Invoice.css`, and `YM_Invoice.js`. The description is as follow:
+The PWA: https://bit.ly/Yusuf_Meiyanto_Invoice_App/
+
+Invoice is in HTML, CSS, and JavaScript. Separate files of `YM_Invoice.html`, `YM_Invoice.css`, and `YM_Invoice.js`. The description is as follow:
 
 The invoice is A4. Top and bottom margins are 2,5 cm while left and right margins are 1 cm. It has rounded dark blue page borders.
 
