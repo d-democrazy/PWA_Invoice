@@ -176,7 +176,12 @@ document.addEventListener('DOMContentLoaded', function () {
             <td><input type="text" class="produk" placeholder="Produk" /></td>
             <td><textarea class="deskripsi-field" placeholder="Deskripsi"></textarea></td>
             <td><input type="number" class="qty" value="1" min="1" /></td>
-            <td><input type="text" class="harga" value="0" /></td>
+            <td>
+                <div class="price-field">
+                    <span>Rp.</span>
+                    <input type="text" class="harga" value="0" />
+                </div>
+            </td>
             <td class="total">Rp. 0</td>
         `;
         productsBody.appendChild(newRow);
