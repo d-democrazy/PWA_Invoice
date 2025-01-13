@@ -1,4 +1,4 @@
-The PWA: https://bit.ly/Yusuf_Meiyanto_Invoice_App/
+The PWA: https://bit.ly/Yusuf_Meiyanto_Invoice_App
 
 Invoice is in HTML, CSS, and JavaScript. Separate files of `YM_Invoice.html`, `YM_Invoice.css`, and `YM_Invoice.js`. The description is as follow:
 
