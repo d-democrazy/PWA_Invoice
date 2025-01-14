@@ -15,7 +15,7 @@
     <meta name="theme-color" content="#003366" />
 
     <!-- Link to external CSS -->
-    <link rel="stylesheet" href="YM_Invoice.css" />
+    <link rel="stylesheet" href="YM_Invoice.css?v=2.0" />
 
     <!-- Ensure the page prints at A4 size with margins -->
     <style>
@@ -195,15 +195,33 @@
     </div>
 
     <!-- Link to external JS -->
-    <script src="YM_Invoice.js"></script>
+    <script src="YM_Invoice.js?v=2.0"></script>
     <!-- Register the service worker -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js')
-                .then(() => console.log('Service Worker Registered!'))
+                .then(registration => {
+                    console.log('Service Worker Registered!');
+
+                    // Listen for updates to the service worker
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+
+                        // When the new service worker is installed
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // Notify the user about the update
+                                if (confirm('A new version is available. Reload to update?')) {
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    });
+                })
                 .catch(err => console.log('Service Worker registration failed!', err));
         }
     </script>
+
 </body>
 
 </html>
