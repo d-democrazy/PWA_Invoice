@@ -1,6 +1,10 @@
 // YM_Invoice.js
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Example: store the date in ISO format
+    let isoDateValue = '2025-01-01'; // default
+
+    // Grab references to DOM elements
     const addRowButton = document.getElementById('add-row');
     const productsBody = document.getElementById('products-body');
 
@@ -11,77 +15,73 @@ document.addEventListener('DOMContentLoaded', function () {
     const totalField = document.getElementById('total');
     const totalRemainingField = document.getElementById('total-remaining');
 
-    // The two date fields in the HTML
     const dueDateField = document.getElementById('due-date');
     const paymentDeadlineField = document.getElementById('payment-deadline');
 
-    // The event date input (customizable)
+    // Our single text input that we want to be type="date" upon focus
     const eventDateInput = document.getElementById('event-date');
 
-    // Generate PDF button
+    // PDF print button
     const generatePdfButton = document.getElementById('generate-pdf');
 
-    // Format a number as IDR currency
+    // --------------------------------------------------------------------
+    // UTILITY: Format 'yyyy-mm-dd' to 'dd-mm-yyyy'
+    function isoToDDMMYYYY(isoString) {
+        if (!isoString) return '';
+        const parts = isoString.split('-');
+        if (parts.length < 3) return '';
+        const [yyyy, mm, dd] = parts;
+        return `${dd}-${mm}-${yyyy}`;
+    }
+
+    // UTILITY: Format IDR currency
     function formatCurrency(num) {
         return 'Rp.' + '\u00a0' + Number(num).toLocaleString('id-ID');
     }
 
-    // Function to set the current date in Indonesian format
+    // UTILITY: Set invoice date in Indonesian format
     function setCurrentDate() {
         const invoiceDateElement = document.getElementById('invoice-date');
         const today = new Date();
-
-        // Options for Indonesian date formatting
-        const options = {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric'
-        };
-
-        const formattedDate = today.toLocaleDateString('id-ID', options);
-        invoiceDateElement.textContent = formattedDate;
+        const options = { day: '2-digit', month: 'long', year: 'numeric' };
+        invoiceDateElement.textContent = today.toLocaleDateString('id-ID', options);
     }
 
-    // Function to generate the next invoice number
+    // UTILITY: Generate invoice number
     function generateInvoiceNumber() {
         const invoiceNumberElement = document.getElementById('invoice-number');
         const storageKey = 'lastInvoiceNumber';
 
-        // Retrieve the last invoice number from localStorage
         let lastNumber = localStorage.getItem(storageKey);
-
         if (lastNumber === null) {
-            // If no invoice number exists, start at 1
             lastNumber = 1;
         } else {
-            // Parse the last number and increment it
             lastNumber = parseInt(lastNumber, 10) + 1;
         }
-
-        // Format the number with leading zeros to make it 5 digits
         const formattedNumber = lastNumber.toString().padStart(5, '0');
-
-        // Create the full invoice number string
-        const invoiceNumber = `YM-INV#${formattedNumber}`;
-
-        // Update the invoice number in the DOM
-        invoiceNumberElement.textContent = invoiceNumber;
-
-        // Store the updated number back into localStorage
+        invoiceNumberElement.textContent = `YM-INV#${formattedNumber}`;
         localStorage.setItem(storageKey, lastNumber);
     }
 
-    // Function to auto-expand textarea vertically
+    // UTILITY: Expand textarea
     function autoExpandTextarea(textarea) {
-        textarea.style.height = 'auto'; // Reset height
-        textarea.style.height = (textarea.scrollHeight) + 'px'; // Set to scrollHeight
+        textarea.style.height = 'auto';
+        textarea.style.height = (textarea.scrollHeight) + 'px';
     }
 
-    // Calculate totals for each product row
+    // UTILITY: Format digits with dots (###.###.###)
+    function formatWithDots(valueString) {
+        const reversed = valueString.split('').reverse();
+        const chunks = [];
+        for (let i = 0; i < reversed.length; i += 3) {
+            chunks.push(reversed.slice(i, i + 3).join(''));
+        }
+        return chunks.join('.').split('').reverse().join('');
+    }
+
+    // CALC: Recalculate invoice totals
     function calculateTotals() {
         let subTotal = 0;
-
-        // Loop through each row
         const rows = productsBody.querySelectorAll('tr');
         rows.forEach(row => {
             const qtyEl = row.querySelector('.qty');
@@ -89,87 +89,83 @@ document.addEventListener('DOMContentLoaded', function () {
             const totalEl = row.querySelector('.total');
 
             const qty = parseFloat(qtyEl.value) || 0;
-
-            // Remove dots before parseInt
             const rawHarga = hargaEl.value.replace(/\./g, '');
-
-            // Parse into integer instead of decimals
             const harga = parseInt(rawHarga, 10) || 0;
 
             const rowTotal = qty * harga;
-
-            // Format rowTotal as IDR
             totalEl.textContent = formatCurrency(rowTotal);
             subTotal += rowTotal;
         });
 
-        // Display sub-total
         subTotalField.textContent = formatCurrency(subTotal);
 
-        // Discount
         const discount = parseFloat(discountInput.value.replace(/\./g, '')) || 0;
         const discounted = subTotal - discount;
         totalField.textContent = formatCurrency(discounted);
 
-        // Down Payment
         const downPayment = parseFloat(downPaymentInput.value.replace(/\./g, '')) || 0;
         const remaining = discounted - downPayment;
-        if (remaining === 0) {
-            totalRemainingField.textContent = 'LUNAS';
-        } else {
-            totalRemainingField.textContent = formatCurrency(remaining);
-        }
+        totalRemainingField.textContent = (remaining === 0)
+            ? 'LUNAS'
+            : formatCurrency(remaining);
     }
 
-    // Update due date to 3 days before Tanggal Acara
+    // DUE DATE: 3 days before event
     function updateDueDate() {
-        const eventDateStr = eventDateInput.value; // e.g. '2025-08-15'
-        if (!eventDateStr) {
+        if (!isoDateValue) {
             dueDateField.textContent = '--';
             paymentDeadlineField.textContent = '--';
             return;
         }
-        const eventDate = new Date(eventDateStr);
-
-        // Subtract 3 days
+        const eventDate = new Date(isoDateValue);
         eventDate.setDate(eventDate.getDate() - 3);
 
-        // Format in Indonesian style (e.g. 12 Agustus 2025)
         const options = { day: '2-digit', month: 'long', year: 'numeric' };
-        const dueDateStr = eventDate.toLocaleDateString('id-ID', options);
-
-        // Set both fields
-        dueDateField.textContent = dueDateStr;
-        paymentDeadlineField.textContent = dueDateStr;
+        const dueStr = eventDate.toLocaleDateString('id-ID', options);
+        dueDateField.textContent = dueStr;
+        paymentDeadlineField.textContent = dueStr;
     }
 
-    function formatWithDots(valueString) {
-        // Insert dots every 3 digits from the right
-        const reversed = valueString.split('').reverse();
-        const chunks = [];
-        for (let i = 0; i < reversed.length; i += 3) {
-            chunks.push(reversed.slice(i, i + 3).join(''));
-        }
-        // Join with dot and reverse back
-        return chunks.join('.').split('').reverse().join('');
-    }
-
-    // On page load
+    // -------------------------------------------------------------
+    // 1) On load, let's do some initial logic
     setCurrentDate();
     generateInvoiceNumber();
+    // We assume isoDateValue has '2025-01-01' or whichever default
+    // Show it in "dd-mm-yyyy" form in the single input
+    eventDateInput.value = isoToDDMMYYYY(isoDateValue);
+
+    // Then we do the rest
     updateDueDate();
     calculateTotals();
 
-    // Initialize existing DESKRIPSI textareas to auto-expand
-    const existingTextareas = productsBody.querySelectorAll('textarea.deskripsi-field');
-    existingTextareas.forEach(textarea => {
-        autoExpandTextarea(textarea);
+    // Expand existing textareas
+    productsBody.querySelectorAll('textarea.deskripsi-field').forEach(autoExpandTextarea);
+
+    // -------------------------------------------------------------
+    // 2) The single input that can become a date picker on focus
+    eventDateInput.addEventListener('focus', function () {
+        // Switch to date so the native picker appears
+        this.type = 'date';
+        // Set to iso so the browser can parse it
+        this.value = isoDateValue;
     });
 
-    // Whenever the event date changes, recalculate due date
-    eventDateInput.addEventListener('change', updateDueDate);
+    // We'll handle the user picking a date (on "change") and also on "blur"
+    eventDateInput.addEventListener('change', function () {
+        isoDateValue = this.value;                  // e.g. "2025-08-15"
+    });
+    eventDateInput.addEventListener('blur', function () {
+        // Now user is done, so revert to type="text"
+        // and show "dd-mm-yyyy"
+        this.type = 'text';
+        this.value = isoToDDMMYYYY(isoDateValue);
 
-    // Event listener to add a new row
+        // Also re-run your due date logic
+        updateDueDate();
+    });
+
+    // -------------------------------------------------------------
+    // 3) Add row
     addRowButton.addEventListener('click', function () {
         const newRow = document.createElement('tr');
         newRow.innerHTML = `
@@ -186,77 +182,51 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
         productsBody.appendChild(newRow);
 
-        // Initialize auto-expand for the new textarea
+        // Expand
         const newTextarea = newRow.querySelector('textarea.deskripsi-field');
-        if (newTextarea) {
-            autoExpandTextarea(newTextarea);
-        }
+        if (newTextarea) autoExpandTextarea(newTextarea);
 
-        // Recalculate totals once new row is added
         calculateTotals();
     });
 
-    // When user types in qty/harga/deskripsi, recalc totals and auto-expand textarea
+    // -------------------------------------------------------------
+    // 4) Listen for user input in the products table
     productsBody.addEventListener('input', function (e) {
         if (e.target.classList.contains('harga')) {
-            // Prevent negative
-            const numericValue = parseFloat(e.target.value.replace(/\./g, '')) || 0;
-            if (numericValue < 0) {
-                e.target.value = '';
-            }
-
-            // Remove anything non-digits
             let numericValueStr = e.target.value.replace(/\D/g, '');
-            // If empty or zero
             if (!numericValueStr) numericValueStr = '';
-
-            // Format with dots: e.g., "10000" -> "10.000"
             const formatted = formatWithDots(numericValueStr);
-
-            // Set the input's visible value
             e.target.value = formatted;
         }
-
-        // If the input is DESKRIPSI textarea, auto-expand
         if (e.target.classList.contains('deskripsi-field')) {
             autoExpandTextarea(e.target);
         }
-
-        // Then recalc totals
         if (e.target.classList.contains('qty') || e.target.classList.contains('harga')) {
             calculateTotals();
         }
     });
 
-    // Event listeners for summary inputs (Diskon and Down Payment)
+    // -------------------------------------------------------------
+    // 5) Summaries: discount & down payment
     [discountInput, downPaymentInput].forEach(input => {
-        input.addEventListener('input', function (e) {
-            // Prevent negative values
-            let numericValue = e.target.value.replace(/\D/g, '');
-            if (parseFloat(numericValue) < 0) {
-                e.target.value = '';
-                numericValue = '';
-            }
-
-            // Format with dots
-            const formatted = formatWithDots(numericValue);
-            e.target.value = formatted;
-
-            // Then recalc totals
+        input.addEventListener('input', function () {
+            let numericValueStr = this.value.replace(/\D/g, '');
+            if (!numericValueStr) numericValueStr = '';
+            const formatted = formatWithDots(numericValueStr);
+            this.value = formatted;
             calculateTotals();
         });
     });
 
-    // Generate PDF (Print)
+    // -------------------------------------------------------------
+    // 6) Print
     generatePdfButton.addEventListener('click', function () {
         window.print();
     });
 
+    // -------------------------------------------------------------
+    // Ensure textareas are fully expanded before printing
     window.addEventListener('beforeprint', function () {
-        const textareas = document.querySelectorAll('textarea.deskripsi-field');
-        textareas.forEach(textarea => {
-            autoExpandTextarea(textarea);
-        });
+        productsBody.querySelectorAll('textarea.deskripsi-field').forEach(autoExpandTextarea);
     });
-
 });

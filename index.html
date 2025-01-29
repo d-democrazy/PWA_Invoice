@@ -28,11 +28,10 @@
 
 <body>
     <div id="invoice">
-        <!-- Section 1: Header (20% height of page) -->
+        <!-- Section 1: Header -->
         <div class="section header">
             <div class="header-left">
                 <h1>INVOICE</h1>
-                <!-- Example: Full date format and invoice number -->
                 <p id="invoice-date">01 January 1970</p>
                 <p id="invoice-number">YM-INV#00001</p>
             </div>
@@ -43,7 +42,6 @@
 
         <!-- Section 2: Billing Info -->
         <div class="section billing">
-            <!-- Left Part -->
             <div class="billing-left">
                 <h2>TAGIHAN DITUJUKAN KEPADA:</h2>
 
@@ -53,9 +51,10 @@
                     <input type="text" id="customer-name" value="Yusuf Meiyanto" placeholder="Nama Klien" />
                 </div>
 
+                <!-- The single input that uses type="text" but can become type="date" on focus -->
                 <div class="billing-field">
                     <label for="event-date">Tanggal Acara:</label>
-                    <input type="date" id="event-date" value="2025-08-15" />
+                    <input type="text" id="event-date" placeholder="dd-mm-yyyy" />
                 </div>
 
                 <div class="billing-field">
@@ -64,7 +63,6 @@
                 </div>
             </div>
 
-            <!-- Right Part -->
             <div class="billing-right">
                 <h2>PEMBAYARAN DITUJUKAN KE:</h2>
                 <p><strong>A.N. YUSUF MEIYANTO</strong></p>
@@ -80,11 +78,11 @@
         <div class="section products">
             <table id="products-table">
                 <colgroup>
-                    <col style="width: 23%;" /> <!-- PRODUK -->
-                    <col style="width: 25%;" /> <!-- DESKRIPSI -->
-                    <col style="width: 10%;" /> <!-- QTY -->
-                    <col style="width: 21%;" /> <!-- HARGA -->
-                    <col style="width: 21%;" /> <!-- TOTAL -->
+                    <col style="width: 23%;" />
+                    <col style="width: 25%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 21%;" />
+                    <col style="width: 21%;" />
                 </colgroup>
                 <thead>
                     <tr>
@@ -111,14 +109,12 @@
                     </tr>
                 </tbody>
             </table>
-            <!-- Button to add row -->
             <pre> </pre>
             <button id="add-row">+ Tambah Produk</button>
         </div>
 
         <!-- Section 4: Summary -->
         <div class="section summary">
-            <!-- Left part = summary table -->
             <div class="summary-left">
                 <table>
                     <tr>
@@ -167,7 +163,6 @@
                     </tr>
                 </table>
             </div>
-            <!-- Right part is intentionally blank -->
             <div class="summary-right"></div>
         </div>
 
@@ -195,6 +190,7 @@
 
     <!-- Link to external JS -->
     <script src="YM_Invoice.js?v=2.0"></script>
+
     <!-- Register the service worker -->
     <script>
         if ('serviceWorker' in navigator) {
@@ -202,14 +198,11 @@
                 .then(registration => {
                     console.log('Service Worker Registered!');
 
-                    // Listen for updates to the service worker
                     registration.addEventListener('updatefound', () => {
                         const newWorker = registration.installing;
 
-                        // When the new service worker is installed
                         newWorker.addEventListener('statechange', () => {
                             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                // Notify the user about the update
                                 if (confirm('A new version is available. Reload to update?')) {
                                     window.location.reload();
                                 }
@@ -220,7 +213,6 @@
                 .catch(err => console.log('Service Worker registration failed!', err));
         }
     </script>
-
 </body>
 
 </html>
